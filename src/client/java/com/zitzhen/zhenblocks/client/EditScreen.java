@@ -36,7 +36,6 @@ public class EditScreen extends Screen {
 				Component.translatable("zhenblocks.screen.edit.hint"));
 		this.editBox.setMaxLength(MAX_LENGTH);
 		this.editBox.setHint(Component.translatable("zhenblocks.screen.edit.hint"));
-		this.editBox.setFocused(true);
 
 		// Pre-fill with the current text from the client-side block entity.
 		if (this.minecraft != null && this.minecraft.level != null
@@ -45,7 +44,6 @@ public class EditScreen extends Screen {
 		}
 
 		addRenderableWidget(this.editBox);
-		setInitialFocus(this.editBox);
 
 		addRenderableWidget(Button.builder(
 				Component.translatable("zhenblocks.screen.edit.confirm"),
@@ -53,6 +51,15 @@ public class EditScreen extends Screen {
 				.pos(this.width / 2 - 50, y + boxHeight + 8)
 				.width(100)
 				.build());
+	}
+
+	// In 26.x the focus system uses ComponentPath. Override the no-arg hook so the
+	// framework's post-init setInitialFocus() call routes keyboard input to the EditBox.
+	// Never call editBox.setFocused(true) manually: it makes nextFocusPath() return null
+	// and silently breaks text input.
+	@Override
+	protected void setInitialFocus() {
+		setInitialFocus(this.editBox);
 	}
 
 	@Override
