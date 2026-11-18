@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "zhenblocks:block/display_block", "y": 0, "uvlock": true },
+    "facing=east":  { "model": "zhenblocks:block/display_block", "y": 90, "uvlock": true },
+    "facing=south": { "model": "zhenblocks:block/display_block", "y": 180, "uvlock": true },
+    "facing=west":  { "model": "zhenblocks:block/display_block", "y": 270, "uvlock": true }
+  }
+}
