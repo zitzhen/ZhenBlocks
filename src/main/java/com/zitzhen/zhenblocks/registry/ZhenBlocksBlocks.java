@@ -10,19 +10,28 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 
 import com.zitzhen.zhenblocks.block.DisplayBlock;
 
 public final class ZhenBlocksBlocks {
+	private static final Identifier DISPLAY_BLOCK_ID =
+			Identifier.fromNamespaceAndPath("zhenblocks", "display_block");
+
 	public static final Block DISPLAY_BLOCK = register(
 			"display_block",
-			new DisplayBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.PALE_OAK_PLANKS)));
+			new DisplayBlock(BlockBehaviour.Properties.of()
+					.setId(ResourceKey.create(Registries.BLOCK, DISPLAY_BLOCK_ID))
+					.mapColor(MapColor.WOOD)
+					.strength(2.0F)
+					.sound(SoundType.WOOD)));
 
 	public static final Item DISPLAY_BLOCK_ITEM = registerItem(
 			"display_block",
-			new BlockItem(DISPLAY_BLOCK, new Item.Properties()));
+			new BlockItem(DISPLAY_BLOCK, new Item.Properties()
+					.setId(ResourceKey.create(Registries.ITEM, DISPLAY_BLOCK_ID))));
 
 	private ZhenBlocksBlocks() {
 	}
