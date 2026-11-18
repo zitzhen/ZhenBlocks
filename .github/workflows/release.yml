@@ -1,0 +1,56 @@
+name: Release
+
+# 推送 v* 标签自动发版；也支持在 Actions 页面手动触发
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '要发布的标签（如 v0.1.0）；留空则使用当前 ref'
+        required: false
+        type: string
+
+permissions:
+  contents: write # 创建 Release 需要写权限
+
+jobs:
+  release:
+    name: Build & publish draft release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Build
+        run: ./gradlew build --no-configuration-cache
+
+      # 收集构建产物（主 jar 与 sources jar）
+      - name: Collect artifacts
+        run: |
+          mkdir -p dist
+          cp build/libs/zhenblocks-*.jar dist/
+          ls -lh dist/
+
+      # draft: true —— 默认发布为草稿，人工确认后再正式发布
+      - name: Publish draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          name: ZhenBlocks ${{ inputs.tag || github.ref_name }}
+          draft: true
+          generate_release_notes: true
+          files: dist/*.jar
