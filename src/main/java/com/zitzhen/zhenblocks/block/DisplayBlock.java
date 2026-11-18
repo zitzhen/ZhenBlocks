@@ -1,8 +1,13 @@
 package com.zitzhen.zhenblocks.block;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -10,7 +15,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.BlockHitResult;
 
+import com.zitzhen.zhenblocks.network.OpenEditScreenPayload;
 import com.zitzhen.zhenblocks.registry.ZhenBlocksBlockEntities;
 
 /**
@@ -38,5 +45,14 @@ public class DisplayBlock extends Block implements EntityBlock {
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return ZhenBlocksBlockEntities.DISPLAY_BLOCK_ENTITY.create(pos, state);
+	}
+
+	@Override
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
+			Player player, BlockHitResult hit) {
+		if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+			ServerPlayNetworking.send(serverPlayer, new OpenEditScreenPayload(pos));
+		}
+		return InteractionResult.SUCCESS;
 	}
 }
