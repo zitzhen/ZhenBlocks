@@ -52,11 +52,13 @@ public class DisplayBlockEntityRenderer
 		poseStack.pushPose();
 
 		// BER origin is the block's center. Rotate so local +Z points toward the front face.
+		// Axis.YP rotation applied to local +Z: 0=SOUTH(+Z), 90=EAST(+X),
+		// 180=NORTH(-Z), 270=WEST(-X).
 		float yRot = switch (state.facing) {
 			case SOUTH -> 0.0F;
-			case WEST -> 90.0F;
+			case EAST -> 90.0F;
 			case NORTH -> 180.0F;
-			case EAST -> 270.0F;
+			case WEST -> 270.0F;
 			default -> 0.0F;
 		};
 		poseStack.rotateDegrees(Axis.YP, yRot);
